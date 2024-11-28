@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Student;
+use Livewire\WithPagination;
+use Livewire\WithoutUrlPagination;
 
 class MainComponent extends Component
 {       
@@ -15,6 +17,15 @@ class MainComponent extends Component
     public $age;
     public $address;
     public $phone;
+    public $edit_student_id = null;
+    use WithPagination, WithoutUrlPagination;
+
+    // edit variables
+    public $edit_name;
+    public $edit_surname;
+    public $edit_age;
+    public $edit_address;
+    public $edit_phone;
 
     public function toggleForm()
     {   
@@ -57,8 +68,9 @@ class MainComponent extends Component
     }
 
     public function render()
-    {
-        return view('livewire.main-component');
+    {   
+        $pagination_students = Student::paginate(10);
+        return view('livewire.main-component', compact('pagination_students'));
     }
 
     public function search()
@@ -73,10 +85,32 @@ class MainComponent extends Component
     }
 
     public function updateStatus($id)
-    {
+    {   
         $student = Student::find($id);
         $student->is_active = !$student->is_active;
         $student->save();
         $this->students = Student::all();
+    }
+
+    public function edit($id){
+        $this -> edit_student_id = $id;
+        $student = Student::find($id);
+        $this -> edit_name = $student -> name;
+        $this -> edit_surname = $student -> surname;
+        $this -> edit_age = $student -> age;
+        $this -> edit_address = $student -> address;
+        $this -> edit_phone = $student -> phone;
+    }
+
+    public function updateStore(){
+        $student = Student::find($this -> edit_student_id);
+        $student -> name = $this -> edit_name;
+        $student -> surname = $this -> edit_surname;
+        $student -> age = $this -> edit_age;
+        $student -> address = $this -> edit_address;
+        $student -> phone = $this -> edit_phone;
+        $student -> save();
+        $this -> students = Student::all();
+        $this -> edit_student_id = null;
     }
 }
