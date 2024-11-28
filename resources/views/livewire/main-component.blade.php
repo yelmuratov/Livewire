@@ -67,16 +67,32 @@
                         <th>Age</th>
                         <th>Address</th>
                         <th>Phone</th>
+                        <th>Is active</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($students as $student)
                         <tr>
-                            <td>{{ $student->name }}</td>
+                            <td>
+                                @if($student->is_active)
+                                    <span class="badge bg-success">
+                                        {{ $student->name }}
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger">
+                                        {{ $student->name }}
+                                    </span>
+                                @endif
+                            </td>
                             <td>{{ $student->surname }}</td>
                             <td>{{ $student->age }}</td>
                             <td>{{ $student->address }}</td>
                             <td>{{ $student->phone }}</td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input wire:change="updateStatus({{ $student->id }})" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" {{ $student->is_active ? 'checked' : '' }}>
+                                </div>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

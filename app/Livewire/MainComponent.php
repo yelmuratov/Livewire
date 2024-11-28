@@ -71,4 +71,12 @@ class MainComponent extends Component
             ->when($this->phone, fn($query) => $query->where('phone', 'like', "%{$this->phone}%"))
             ->get();
     }
+
+    public function updateStatus($id)
+    {
+        $student = Student::find($id);
+        $student->is_active = !$student->is_active;
+        $student->save();
+        $this->students = Student::all();
+    }
 }
